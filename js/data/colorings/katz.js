@@ -28,7 +28,7 @@ define([
                 return '#f84';;
             }
             if(route.indexOf('Тб') != -1) {
-                return '#6f0';
+                return '#1bf'; // '#6f0';
             }
             if(trolleyFraction > 0.5 && !(data.registry[route] && (data.registry[route].vendor != 'mgt' || data.registry[route].express))) {
                 return '#1bf';

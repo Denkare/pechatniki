@@ -22,7 +22,7 @@ var ANIMATION_DURATION = 300;
 
 var Map = function(dataManager, stateManager, worker) {
     this._map = new ymaps.Map('map', extend({
-        controls: ['zoomControl', 'geolocationControl'],
+        controls: [], // 'zoomControl', 'geolocationControl'],
     }, {
         bounds : stateManager.getBounds()
     }, {
@@ -53,7 +53,11 @@ extend(Map.prototype, {
             worker = this._worker,
             that = this;
 
-        this._stateManager.isMobile() || map.controls.add('rulerControl', { position : { left : 10, bottom : 35 } });
+        //this._stateManager.isMobile() || map.controls.add('rulerControl', { position : { left : 10, bottom : 35 } });
+
+        map.controls.add('geolocationControl', { position : { right : 10, top : 10 } });
+        map.controls.add('zoomControl', { position : { right : 10, top : 50 } });
+
         map.panes.append('mgtmap', new (map.panes.get('places').constructor)(map, {
             zIndex : 200
         }));
@@ -157,7 +161,7 @@ extend(Map.prototype, {
         if(this._currentSegmentRoutes) {
             var segmentId = e.get('activeObject').getProperties().segmentId;
 
-            this._dataManager.getActualRoutesForSegment(segmentId).done(function(routes) {
+            this._dataManager.getActualRoutesForSegment(segmentId).then(function(routes) {
                 if(!this._currentSegmentRoutes || !routes) {
                     return;
                 }
@@ -192,7 +196,7 @@ extend(Map.prototype, {
             dataManager = this._dataManager,
             segmentId = e.get('activeObject').getProperties().segmentId;
 
-        dataManager.getActualRoutesForSegment(segmentId).done(function(routes) {
+        dataManager.getActualRoutesForSegment(segmentId).then(function(routes) {
             return vow.all(routes.reduce(function(res, i) {
                 var routeName = i.replace(/^[<>]/g, '');
                 res[routeName] = dataManager.getBusColor(routeName);

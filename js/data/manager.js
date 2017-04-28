@@ -48,8 +48,11 @@ var DataManager = function(stateManager) {
             this.trigger('data-updated');
         }
     }, this);
+
+    this._worker = null;
     
     this._recalcActuals(Object.keys(this._stateManager.serialize()));
+
 };
 
 extend(DataManager.prototype, eventEmitter);
@@ -86,6 +89,10 @@ extend(DataManager.prototype, {
         
         this._loadingPromises[fileName] = promise;
         return promise;
+    },
+
+    setWorker : function(worker) {
+        this._worker = worker;
     },
     
     getSegments : function() {
@@ -198,7 +205,7 @@ extend(DataManager.prototype, {
 
             registryData && (res += '<span class="subtitle">' + registryData.endpoints + '</span>');
 
-            if(stateManager.getCustomColoringId() == 'troll-project') {
+            /*if(stateManager.getCustomColoringId() == 'troll-project') {*/
                 var trolleyFraction = Math.round(trolleyUtils.getTrolleyFraction(route, lengths, this._actualRoutes, trolleyWires) * 100),
                     isExpress = registryData && registryData.express,
                     isPrivate = registryData && registryData.vendor != 'mgt',
@@ -249,7 +256,7 @@ extend(DataManager.prototype, {
                 }
 
                 return res;
-            }
+            /*}
 
             if(!freqs[route]) {
                 res += 'Нет данных о частоте движения';
@@ -270,7 +277,7 @@ extend(DataManager.prototype, {
             }
 
             registryData && (res += '<br/><br>Перевозчик: <b>' + registry[route].vendor + '</b>');
-            return res;
+            return res;*/
         }, this);
     },
 

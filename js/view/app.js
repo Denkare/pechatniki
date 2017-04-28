@@ -16,10 +16,11 @@ define([
     eventsEmitter
 ) {
 
-var AppView = function(map, dataManager, stateManager) {
+var AppView = function(map, dataManager, stateManager, worker) {
     this._map = map;
     this._stateManager = stateManager;
     this._dataManager = dataManager;
+    this._worker = worker;
 
     this._init();
 };
@@ -28,6 +29,7 @@ extend(AppView.prototype, eventsEmitter);
 
 extend(AppView.prototype, {
     _init : function() {
+        this._createTopPane();
         this._createControls();
         
         $(document)
@@ -39,11 +41,55 @@ extend(AppView.prototype, {
             .on('mouseover', '.segment .bus, .segment .trolley, .segment .tram', this._onRouteMouseOver.bind(this))
             .on('mouseout', '.segment .bus, .segment .trolley, .segment .tram', this._onRouteMouseOut.bind(this))
             .on('click', '.route-card .close', this._onDeselectRoute.bind(this))
+            .on('click', '.mayor-option', this._onChangeColoring.bind(this))
+
             //.on('click', '.deselect-all', this._onDeselectAllRoutes.bind(this));
 
         this._map
             .on('highlight-routes', this._onRoutesHighlightedOnMap, this)
             .on('unhighlight-routes', this._onRoutesUnhighlightedOnMap, this);
+
+
+        this._worker
+            .on('busy', this._onWorkerBusy, this)
+            .on('ready', this._onWorkerReady, this);
+    },
+
+    _createTopPane : function() {
+        var yMap = this._map.getMap();
+
+        this._topPane = $('<div class="top-pane"><h1>Сколько троллейбусов должно быть в Москве?</h1></div>');
+        yMap.panes.append('top-pane', new ymaps.pane.StaticPane(yMap, {
+            css : {
+                left: 0,
+                right: 0
+            },
+            zIndex : 203
+        }));
+        yMap.panes.get('top-pane').getElement().appendChild(this._topPane[0]);
+
+        vow.all([
+            this._dataManager.getWholeTrollNumber(),
+            this._dataManager.getWholeBusNumber(),
+            this._dataManager.getEcoBusNumber(),
+        ]).spread(function(trolls, buses, ecobuses) {
+            $('.counter-temp').remove();
+            $('.counters').append([
+                $('<span/>').addClass('counter-sobyanin').append([
+                    $('<div/>').addClass('counter trolley').html(0),
+                    $('<div/>').addClass('counter bus').html(trolls + buses)
+                ]),
+                $('<span/>').addClass('counter-now').append([
+                    $('<div/>').addClass('counter trolley').html(trolls),
+                    $('<div/>').addClass('counter bus').html(buses)
+                ]),
+                $('<span/>').addClass('counter-katz').append([
+                    $('<div/>').addClass('counter trolley').html(trolls + ecobuses),
+                    $('<div/>').addClass('counter bus').html(buses - ecobuses)
+                ])
+            ]);
+        });
+
 
     },
     
@@ -52,7 +98,7 @@ extend(AppView.prototype, {
 
         this._selectedRouteViews = {};          
     
-        this._createListControl(
+        /*this._createListControl(
             ({ 6 : 'суббота', 0 : 'воскресенье' })[(new Date()).getDay()] || 'будни',
             {
                 float : 'right'
@@ -133,12 +179,12 @@ extend(AppView.prototype, {
             if(this.value) {
                 _this.trigger('time-settings-updated', { date : +new Date(this.value) });
             }
-        });
+        });*/
 
         this.updateSelectedRoutes();
     },
 
-    _createListControl : function(content, options, items, onItemSelected, ctx) {
+    /*_createListControl : function(content, options, items, onItemSelected, ctx) {
         var control = new ymaps.control.ListBox({
                 data: {
                     content: content
@@ -162,7 +208,7 @@ extend(AppView.prototype, {
             control.get(i).events.add('click', createEventListener(i));
         });
         this._map.getMap().controls.add(control, options);
-    },
+    },*/
     
     /*_onSaveSegment : function(e) {
         if(!this._stateManager.isAdminMode()) return;
@@ -313,6 +359,26 @@ extend(AppView.prototype, {
             });
         });*/
         this.updateSelectedRoutes();
+    },
+
+    _onChangeColoring : function(e) {
+        var option = e.target,
+            newColoring = e.target.className.split(' ')[1];
+
+        $('body').removeClass('sobyanin katz now').addClass(newColoring);
+        $('#spinner').addClass('visible');
+
+        setTimeout(function() {
+            this._stateManager.setCustomColoringId(newColoring);
+        }.bind(this), 200);
+    },
+
+    _onWorkerReady : function(e) {
+        $('#spinner').removeClass('visible');
+    },
+
+    _onWorkerBusy : function(e) {
+        $('#spinner').addClass('visible');
     }
 });
 

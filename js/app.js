@@ -35,8 +35,10 @@ require([
             dataManager = new DataManager(stateManager),
             tileWorker = new MapWorker(dataManager, stateManager);
 
+        dataManager.setWorker(tileWorker);
+
         var map = new Map(dataManager, stateManager, tileWorker),
-            appView = new AppView(map, dataManager, stateManager);
+            appView = new AppView(map, dataManager, stateManager, tileWorker);
 
         stateManager.isDebugMode() && (window.mgtApp = {
             dataManager : dataManager,

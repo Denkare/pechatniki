@@ -19,19 +19,22 @@ require([
     'worker/commands/init',
     'worker/commands/setup',
     'worker/commands/renderTile',
-    'worker/commands/renderHotspots'
+    'worker/commands/renderHotspots',
+    'worker/commands/calcActuals'
 ], function(
     vow,
     initCommand,
     setupCommand,
     renderTileCommand,
-    renderHotspotsCommand
+    renderHotspotsCommand,
+    calcActualsCommand
 ) {
     var commands = {
         init : initCommand,
         setup : setupCommand,
         renderTile : renderTileCommand,
-        renderHotspots : renderHotspotsCommand
+        renderHotspots : renderHotspotsCommand,
+        calcActuals : calcActualsCommand
     };
         
     this.addEventListener('message', function(e) {

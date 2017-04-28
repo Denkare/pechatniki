@@ -6,15 +6,28 @@
         <link rel="stylesheet" type="text/css" href="index.css"/>
         <script data-main="js/app" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.min.js"></script>
     </head>
-    <body>
+    <body class="now">
         <!--div class="current-routes"></div>
         <div class="deselect-all" title="Убрать все">×</div-->
         <div id="map"></div>
         <div class="sidebar"></div>
-        <form id="dateForm">
+        <div class="mayor-selector">
+            <div class="mayor-option sobyanin">Как планируют в мэрии</div>
+            <div class="mayor-option now">Как сейчас</div>
+            <div class="mayor-option katz">Как надо</div>
+        </div>
+        <div class="counters">
+            Всего на маршрутах:<br>
+            <span class="counter-temp">
+                <div class="trolley">...</div>
+                <div class="bus">...</div>
+            </span>
+        </div>
+        <div id="spinner" class="visible"></div>
+        <!--form id="dateForm">
             <input name="date" type="date"/>
-        </form>
-        <a href="https://github.com/sergets/mgtmap/blob/master/README.md"><img src="troll-logo.png" class="logo"></a>
+        </form-->
+        <!--a href="https://github.com/sergets/mgtmap/blob/master/README.md"><img src="troll-logo.png" class="logo"></a-->
         <!-- Yandex.Metrika counter --> <script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter37075485 = new Ya.Metrika({ id:37075485, clickmap:true, trackLinks:true, accurateTrackBounce:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks"); </script> <noscript><div><img src="https://mc.yandex.ru/watch/37075485" style="position:absolute; left:-9999px;" alt="" /></div></noscript> <!-- /Yandex.Metrika counter -->
     </body>
 </html>

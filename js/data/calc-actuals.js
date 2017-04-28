@@ -2,20 +2,16 @@ define([
     'vow',
     'utils/extend',
 	'utils/date',
-    'data/colorings/default',
-    'data/colorings/type',
-    'data/colorings/black',
-    'data/colorings/vendor',
-    'data/colorings/troll-project'
+    'data/colorings/sobyanin',
+    'data/colorings/now',
+    'data/colorings/katz'
 ], function(
     vow,
     extend,
 	dateUtils,
-    defaultColoring,
-    typeColoring,
-    blackColoring,
-    vendorColoring,
-    trollProjectColoring
+    sobyaninColoring,
+    nowColoring,
+    katzColoring
 ) {
 
 var DEFAULT_WIDTH = 2,
@@ -23,15 +19,13 @@ var DEFAULT_WIDTH = 2,
     SELECTED_ROUTE_WIDTH = 20;
 
 var colorings = {
-    default : defaultColoring,
-    type : typeColoring,
-    black : blackColoring,
-    vendor : vendorColoring,
-    'troll-project' : trollProjectColoring
+    sobyanin : sobyaninColoring,
+    now : nowColoring,
+    katz : katzColoring
 };
 
 return function(data, state, updatedStateFields, oldActuals) {
-    var coloring = colorings[state.customColoringId || 'default'];
+    var coloring = colorings[state.customColoringId || 'now'];
 
     var shouldRecalcActualRoutes = updatedStateFields.indexOf('timeSettings') != -1,
         shouldRecalcColors = updatedStateFields.indexOf('customColoringId') != -1 || 

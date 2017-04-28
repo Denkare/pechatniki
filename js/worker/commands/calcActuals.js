@@ -16,8 +16,6 @@ define([
                 return changeds;
             }, []);
 
-        this.state = state;
-
         return calcActuals(
             data,
             state,
@@ -28,27 +26,6 @@ define([
                 actualColors : this.actualColors,
                 actualSegmentOutlines : this.actualSegmentOutlines
             }
-        ).then(function(actuals) {
-            this.actualRoutes = actuals.actualRoutes;
-            this.actualWidths = actuals.actualWidths;
-            this.actualColors = actuals.actualColors;
-            this.actualSegmentOutlines = actuals.actualSegmentOutlines;
-
-            this.maxWidth = 0;
-
-            this.tilePixelLinesCache.drop();
-            
-            this.maxWidth = data.segments.reduce(function(prev, segment, id) {
-                if(!segment.length) return;
-
-                var width = (this.actualRoutes[id] || []).reduce(function(s, route) {
-                    return s + (this.actualWidths[route.replace(/^[-<>]/, '')] || 0); 
-                }, 0);
-
-                return Math.max(width, prev);
-            }, 0);
-        }, this).then(function() {
-            return { state : 'ready' };
-        });
+        );
     };
 });

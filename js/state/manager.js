@@ -24,9 +24,9 @@ var StateManager = function() {
         bounds :
         [[55.74, 37.55], [55.76, 37.65]];
     this._timeSettings = {
-        dow : ({ 6 : 32, 0 : 64 })[(new Date()).getDay()] || 1,
-        fromHour : (new Date()).getHours(),
-        toHour : (new Date()).getHours(),
+        dow : 1, // ({ 6 : 32, 0 : 64 })[(new Date()).getDay()] || 1,
+        fromHour : 0, //(new Date()).getHours(),
+        toHour : 29, //(new Date()).getHours(),
         date : +new Date(new Date().toISOString().substring(0, 10))
     };
     this._selectedRoutes = query.routes? query.routes.split(',') : [];

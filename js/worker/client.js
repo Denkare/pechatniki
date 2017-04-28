@@ -51,9 +51,11 @@ extend(MapWorker.prototype, {
             this._postInitMessage();
         } else if (e.data.state == 'busy') {
             this._isBusy = true;
+            this.trigger('busy');
         } else if (e.data.state == 'ready') {
             this._isBusy = false;
             this._isInited = true;
+            this.trigger('ready');
             this.trigger('updated');
             this._messageQueue.forEach(function(msg) {
                 this.postMessage.apply(this, msg);
