@@ -24,7 +24,8 @@ define([
 
 var DEFAULT_WIDTH = 2,
     NO_DATA_WIDTH = 0,
-    SELECTED_ROUTE_WIDTH = 20;
+    SELECTED_ROUTE_WIDTH = 20,
+    BASE_DATA_URL = '//sergets.github.io/mgtmap/data/';
 
 var DataManager = function(stateManager) {
     this._stateManager = stateManager;
@@ -70,7 +71,7 @@ extend(DataManager.prototype, {
             promise = deferred.promise();
         
         $.ajax({
-            url : fileName,
+            url : BASE_DATA_URL + fileName,
             data : {
                 ncrnd : Math.random()
             },
@@ -80,7 +81,7 @@ extend(DataManager.prototype, {
             },
             dataType : 'json',
             error : function(req, st, e) {
-                alert('error on ' + fileName + ': ' + e.message);
+                console.warn('Data error on ' + fileName + ': ' + e.message);
                 deferred.reject(e);
             },
             context : this
@@ -96,14 +97,14 @@ extend(DataManager.prototype, {
     },
     
     getSegments : function() {
-        return this._getDataFromFile('data/segments.json');
+        return this._getDataFromFile('segments.json');
     },
     
     setSegmentGeometry : function(segmentId, geometry) {
         return vow.all([this.getSegments(), this.getSegmentBounds()]).done(function() {
-            this._data['data/segments.json'][segmentId] = geometry;
+            this._data['segments.json'][segmentId] = geometry;
             this._bounds[segmentId] = geomUtils.bounds(geometry);
-            this._changedFiles['data/segments.json'] = true;
+            this._changedFiles['segments.json'] = true;
             this.trigger('data-updated');
         }, this);
     },
@@ -115,19 +116,19 @@ extend(DataManager.prototype, {
     },
 
     getRoutes : function() {
-        return this._getDataFromFile('data/routes.json');
+        return this._getDataFromFile('routes.json');
     },
 
     getRoutesForSegment : function(segmentId) {
-        return this._getDataFromFile('data/routes.json').then(function(routesBySegment) {
+        return this.getRoutes().then(function(routesBySegment) {
             return routesBySegment[segmentId] || {};
         });
     },
     
     setRoutesForSegment : function(segmentId, data) {
         return this.getRoutesForSegment(segmentId).then(function() {
-            this._data['data/routes.json'][segmentId] = data;
-            this._changedFiles['data/routes.json'] = true;
+            this._data['routes.json'][segmentId] = data;
+            this._changedFiles['routes.json'] = true;
             this.trigger('data-updated');
         }, this);
     },
@@ -139,7 +140,7 @@ extend(DataManager.prototype, {
     },
     
     getFreqs : function() {
-        return this._getDataFromFile('data/freqs.json');
+        return this._getDataFromFile('freqs.json');
     },
     
     getActualWidthForRoute : function(route) {
@@ -155,11 +156,11 @@ extend(DataManager.prototype, {
     },
 
     getRegistry : function() {
-        return this._getDataFromFile('data/rgam.json');
+        return this._getDataFromFile('rgam.json');
     },
 
     getWiredSegments : function() {
-        return this._getDataFromFile('data/trolley-wire.json');
+        return this._getDataFromFile('trolley-wire.json');
     },
 
     getSegmentLengths : function() {
