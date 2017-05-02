@@ -30,7 +30,6 @@ body {
 }
 
 #spinner.visible {
-    // animation: spin 1s infinite linear;
     transform: scale(1);
     opacity: 1;
 }
@@ -115,9 +114,24 @@ body {
     height: 100px;
     text-align: center;
     display: inline-block;
-    box-shadow: 0 0 30px 30px rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 20px 20px rgba(255, 255, 255, 0.9);
     background: rgba(255, 255, 255, 0.9);
     transition: 1s;
+}
+
+body.sobyanin .counters {
+    box-shadow: 0 0 20px 20px rgba(224, 224, 224, 0.9);
+    background: rgba(224, 224, 224, 0.9);
+}
+
+body.now .counters {
+    box-shadow: 0 0 20px 20px rgba(240, 240, 224, 0.9);
+    background: rgba(240, 240, 224, 0.9);
+}
+
+body.katz .counters {
+    box-shadow: 0 0 20px 20px rgba(255, 255, 208, 0.9);
+    background: rgba(255, 255, 208, 0.9);
 }
 
 .counters .trolley, .counters .bus {
@@ -135,6 +149,12 @@ body {
     transition: .3s;
 }
 
+@media screen and (max-width: 500px) {
+    .counters {
+        transform: scale(0.7);
+    }
+}
+
 body.sobyanin .counter-sobyanin,
 body.now .counter-now,
 body.katz .counter-katz,
@@ -150,9 +170,20 @@ body.katz .counter-katz,
     top: 0;
     left: 0;
     right: 0;
-    height: 150px;
+    padding-bottom: 150px;
     text-align: center;
     transition: 1s;
+}
+
+@media screen and (max-width: 500px) {
+    .top-pane {
+        font-size: 12px;
+        padding-bottom: 10px;
+    }
+
+    h1 {
+        font-size: 18px !important;
+    }
 }
 
 body.sobyanin .top-pane {
@@ -170,10 +201,16 @@ body.katz .top-pane {
 .mayor-selector {
     width: 500px;
     position: absolute;
-    top: 60px;
     left: 50%;
     margin-left: -250px;
     text-align: center;
+    margin-top: 10px;
+}
+
+@media screen and (max-width: 500px) {
+    .mayor-selector {
+        transform: scale(0.7);
+    }
 }
 
 .mayor-option {

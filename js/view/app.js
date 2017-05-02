@@ -58,7 +58,23 @@ extend(AppView.prototype, {
     _createTopPane : function() {
         var yMap = this._map.getMap();
 
-        this._topPane = $('<div class="top-pane"><h1>Сколько троллейбусов должно быть в Москве?</h1></div>');
+        this._topPane = $('<div class="top-pane"><h1>Сколько троллейбусов должно быть в Москве?</h1>' +
+                'Современные троллейбусы могут проходить до 50% маршрута без проводов. ' + 
+                'Многие автобусные маршруты сейчас проходят под проводами и их можно сделать тихими и экологичными прямо завтра, ' + 
+                'без нового строительства — нужно просто купить троллейбусы!' +
+            '</div>');
+        this._mayorPane = $('<div class="mayor-selector">' + 
+                    '<div class="mayor-option sobyanin">Как планируют в мэрии</div>' +
+                    '<div class="mayor-option now">Как сейчас</div>' + 
+                    '<div class="mayor-option katz">Как надо</div>' +
+                '</div>');
+        this._countersPane = $('<div class="counters">' + 
+            'Всего на маршрутах:<br>' +
+            '<span class="counter-temp">' +
+                '<div class="trolley">...</div>' + 
+                '<div class="bus">...</div>' +
+            '</span>' +
+        '</div>');
         yMap.panes.append('top-pane', new ymaps.pane.StaticPane(yMap, {
             css : {
                 left: 0,
@@ -67,6 +83,31 @@ extend(AppView.prototype, {
             zIndex : 203
         }));
         yMap.panes.get('top-pane').getElement().appendChild(this._topPane[0]);
+
+        yMap.panes.append('mayor-pane', new ymaps.pane.StaticPane(yMap, {
+            css : {
+                left: '50%',
+                top: this._topPane.height() + 'px',
+                //marginTop: '10px',
+                //marginLeft: '-250px'
+            },
+            zIndex : 603
+        }));
+        yMap.panes.get('mayor-pane').getElement().appendChild(this._mayorPane[0]);
+
+        yMap.panes.append('counters-pane', new ymaps.pane.StaticPane(yMap, {
+            css : {
+                left: '50%',
+                bottom: 0
+            },
+            zIndex : 204
+        }));
+        yMap.panes.get('counters-pane').getElement().appendChild(this._countersPane[0]);
+
+
+        $(window).resize(function() {
+            $(yMap.panes.get('mayor-pane').getElement()).css('top', this._topPane.height() + 'px');
+        }.bind(this));
 
         vow.all([
             this._dataManager.getWholeTrollNumber(),

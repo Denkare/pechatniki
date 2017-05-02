@@ -18,6 +18,6 @@ define(['data/trolley'], function(trolleyUtils) {
             }
         },
         shouldRecalcColorsOn : ['timeSettings'],
-        shouldRecalcOutlinesOn : []
+        shouldRecalcOutlinesOn : ['timeSettings', 'selectedRoutes']
     };
 });
