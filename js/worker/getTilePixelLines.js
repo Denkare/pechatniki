@@ -128,11 +128,10 @@ define([
 								var resPath = offsetLine(generator, segmentUnshiftedCoords, curPosition);
 
 								lines = lines.concat(dashLines.map(function(line) {
-									return Object.assign({
-										coords : resPath,
-										color : colors[route.replace(/^[-<>]/, '')] || '#ccc',
-										data : { id : id, route : route.replace(/^[-<>]/, '') }
-									}, line);
+									line.coords || (line.coords = resPath);
+									line.color || (line.color = colors[route.replace(/^[-<>]/, '')] || '#ccc');
+									line.data || (line.data = { id : id, route : route.replace(/^[-<>]/, '') });
+									return line;
 								}));
 						}
 
