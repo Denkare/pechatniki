@@ -207,19 +207,24 @@ extend(DataManager.prototype, {
             registryData && (res += '<span class="subtitle">' + registryData.endpoints + '</span>');
 
             /*if(stateManager.getCustomColoringId() == 'troll-project') {*/
+
                 var trolleyFraction = Math.round(trolleyUtils.getTrolleyFraction(route, lengths, this._actualRoutes, trolleyWires) * 100),
                     isExpress = registryData && registryData.express,
                     isPrivate = registryData && registryData.vendor != 'mgt',
+                    isSmall = registryData && registryData.class.join() == 's',
                     type = route.indexOf('Тб') == 0? 'troll' : route.indexOf('Тм') == 0? 'tram' : 'bus'; 
+
 
                 if(type == 'troll') {
                     res += 'Это троллейбусный маршрут. Троллейбус экологичен, чист и бесшумен.';
                 } else if(type == 'tram') {
                     res += 'Это трамвайный маршрут. Трамвай экологичен, чист и при правильной прокладке путей практически бесшумен.';
                 } else if(isExpress && trolleyFraction >= 50) {
-                    res += 'Это автобус-экспресс. <b>' + trolleyFraction + '%</b> его трассы проходят под троллейбусными проводами, но чтобы он мог обгонять поостановочные троллейбусы, нужно повесить вторую пару проводов. Это будет несложно, так как питающие подстанции и кабели уже на месте.';
+                    res += 'Это автобус-экспресс. <b>' + trolleyFraction + '%</b> его трассы проходят под троллейбусными проводами, но чтобы он мог обгонять поостановочные троллейбусы, нужно повесить вторую пару проводов. Это будет несложно, так как питающие подстанции и кабели уже на месте, но по формальному критерию нашей карты (ни метра новых проводов) этот маршрут не подходит.';
+                } else if(isSmall && trolleyFraction >= 50) {
+                    res += 'На этом автобусном маршруте работают микроавтобусы малого класса. Такие редкоходящие маршруты с малым пассажиропотоком и есть экономическая ниша автобуса. Под троллейбусными проводами проходит <b>' + trolleyFraction + '%</b> его трассы, но заменять микроавтобусы на большие троллейбусы может быть экономически нецелесообразно. К тому же электробус такого размера, пригодный для нашего климата, вероятно, появится раньше полноразмерного.';
                 } else if(isPrivate && trolleyFraction >= 50) {
-                    res += 'Этот автобусный маршрут обслуживается частным перевозчиком. <b>' + trolleyFraction + '%</b> его трассы проходят под троллейбусными проводами, поэтому его можно было бы перевести на бесшумный и чистый подвижной состав прямо сейчас, но это потребует пересмотра условий контракта.';
+                    res += 'Этот автобусный маршрут на <b>' + trolleyFraction + '%</b> проходит под троллейбусными проводами. Грязные дизельные автобусы можно заменить на тихие экологичные троллейбусы хоть завтра, технологии это позволяют.<br/>Этот маршрут обслуживается частным перевозчиком, однако есть процедура передачи частных маршрутов Мосгортрансу: частник взамен получает возможность открыть новый автобусный маршрут c похожими параметрами.';
                 } else if(trolleyFraction >= 50) {
                     res += 'Этот автобусный маршрут на <b>' + trolleyFraction + '%</b> проходит под троллейбусными проводами. Грязные дизельные автобусы можно заменить на тихие экологичные троллейбусы хоть завтра, технологии это позволяют.';
                 } else {
@@ -251,8 +256,13 @@ extend(DataManager.prototype, {
                             many : 'трамваев'
                         }
                     }[type][inclination] + '. ';
-                    if(type == 'bus' && quantity) { 
-                        res += 'В год ' + (quantity == 1? 'он выбасывает' : 'они выбасывают') + ' в воздух примерно <b>' + quantity * 3 + ' т</b> опасных газов (CO, оксидов серы и азота).';
+                    if(type == 'bus' && quantity) {
+
+                        var wasteCoefficient = registryData.class? registryData.class.reduce(function(p, c) {
+                            return p + { 's' : 0.9, 'm' : 2.2, 'l' : 3, 'xl' : 3.5 }[c];
+                        }, 0) / registryData.class.length : 3;
+
+                        res += 'В год ' + (quantity == 1? 'он выбасывает' : 'они выбасывают') + ' в воздух примерно <b>' + Math.round(quantity * wasteCoefficient) + ' т</b> опасных газов (CO, оксидов серы и азота).';
                     }
                 }
 
@@ -327,7 +337,7 @@ extend(DataManager.prototype, {
 
                 return r + (busRegistry && 
                     trolleyUtils.getTrolleyFraction(route, lengths, that._actualRoutes, trolleyWires) >= 0.5 &&
-                    busRegistry.vendor == 'mgt' &&
+                    busRegistry.class.join() != 's' &&
                     !busRegistry.express?
                         busRegistry.quantity :
                         0);

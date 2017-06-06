@@ -5,8 +5,7 @@ define([
 ) {
     return {
         getRouteColor : function(route, data, state, actuals) {
-            var trolleyFraction = trolleyUtils.getTrolleyFraction(route, data.lengths, actuals.actualRoutes, data.trolleyWires);
-
+            var trolleyFraction = Math.round(trolleyUtils.getTrolleyFraction(route, data.lengths, actuals.actualRoutes, data.trolleyWires) * 100)
             /*var totalLength = 0,
                 trolleyLength = 0;
 
@@ -30,7 +29,7 @@ define([
             if(route.indexOf('Тб') != -1) {
                 return '#1bf'; // '#6f0';
             }
-            if(trolleyFraction > 0.5 && !(data.registry[route] && (data.registry[route].vendor != 'mgt' || data.registry[route].express))) {
+            if(trolleyFraction >= 50 && !(data.registry[route] && (data.registry[route].class.join() == 's' || data.registry[route].express))) {
                 return '#1bf';
             }
             return '#528';
